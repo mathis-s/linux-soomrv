@@ -209,6 +209,10 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
 	if (copy_to_user(&frame->sigreturn_code, __user_rt_sigreturn,
 			 sizeof(frame->sigreturn_code)))
 		return -EFAULT;
+	
+	/* Make sure the two instructions are pushed to icache */
+	local_flush_icache_all();
+	
 	regs->ra = (unsigned long)&frame->sigreturn_code;
 #endif /* CONFIG_MMU */
 
